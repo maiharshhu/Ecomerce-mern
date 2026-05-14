@@ -58,9 +58,14 @@ export default function Navbar() {
             </Link>
           </>
         ) : (
-          <button onClick={logout} className="text-lg">
-            Logout
-          </button>
+          <>
+            <Link to="/admin/products" className="text-lg">
+              Admin
+            </Link>
+            <button onClick={logout} className="text-lg">
+              Logout
+            </button>
+          </>
         )}
       </div>
     </nav>
