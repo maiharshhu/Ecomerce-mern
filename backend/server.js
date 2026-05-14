@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import connectDB from './config/db.js';
+import connectDB, { getMongoUri } from './config/db.js';
 import authRoutes from './routes/authRoutes.js';
 import productRoutes from './routes/productsRoutes.js';
 import cartRoutes from './routes/cart.js';
@@ -10,8 +10,8 @@ import orderRoute from './routes/order.js'
 
 dotenv.config();
 
-if (!process.env.MONGO_URI) {
-    throw new Error("MONGO_URI is required in backend/.env");
+if (!getMongoUri()) {
+    throw new Error("MONGO_URI or MONGODB_URI is required in backend/.env");
 }
 
 if (!process.env.JWT_SECRET) {
