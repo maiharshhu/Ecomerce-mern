@@ -89,96 +89,89 @@ export default function ProductList() {
   return (
     <div className="app-page">
       <div className="page-shell">
-      <div className="flex justify-between items-center mb-6 gap-4">
-        <h2 className="section-title text-2xl font-bold">Product List</h2>
-        <Link
-          to="/admin/products/add"
-          className="btn-primary"
-        >
-          Add New Product
-        </Link>
-      </div>
-
-      <form onSubmit={handleFilter} className="soft-panel grid gap-3 p-4 md:grid-cols-3 mb-6">
-        <input
-          type="text"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search title"
-          className="input-field"
-        />
-        <select
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          className="select-field"
-        >
-          <option value="">All Categories</option>
-          <option value="Laptops">Laptops</option>
-          <option value="Mobiles">Mobiles</option>
-          <option value="Tablets">Tablets</option>
-        </select>
-        <div className="flex gap-2">
-          <button
-            type="submit"
-            className="btn-secondary flex-1"
-          >
-            Filter
-          </button>
-          <button
-            type="button"
-            onClick={resetFilters}
-            className="btn-ghost flex-1"
-          >
-            Reset
-          </button>
+        <div className="mb-6 flex items-center justify-between gap-4">
+          <h2 className="section-title text-2xl font-bold">Product List</h2>
+          <Link to="/admin/products/add" className="btn-primary">
+            Add New Product
+          </Link>
         </div>
-      </form>
 
-      {loading && (
-        <p className="mb-4 text-sm text-slate-600">Loading products...</p>
-      )}
+        <form
+          onSubmit={handleFilter}
+          className="soft-panel mb-6 grid gap-3 p-4 md:grid-cols-3"
+        >
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search title"
+            className="input-field"
+          />
+          <select
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            className="select-field"
+          >
+            <option value="">All Categories</option>
+            <option value="Laptops">Laptops</option>
+            <option value="Mobiles">Mobiles</option>
+            <option value="Tablets">Tablets</option>
+          </select>
+          <div className="flex gap-2">
+            <button type="submit" className="btn-secondary flex-1">
+              Filter
+            </button>
+            <button
+              type="button"
+              onClick={resetFilters}
+              className="btn-ghost flex-1"
+            >
+              Reset
+            </button>
+          </div>
+        </form>
 
-      <table className="w-full table-auto border-collapse table-card">
-        <thead className="table-head">
-          <tr>
-            <th className="px-4 py-3">Title</th>
-            <th className="px-4 py-3">Price</th>
-            <th className="px-4 py-3">Stock</th>
-            <th className="px-4 py-3">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {products.map((product) => (
-            <tr key={product._id} className="text-center border-t border-slate-200">
-              <td className="px-4 py-3">
-                {product.title}
-              </td>
-              <td className="px-4 py-3">
-                {product.price}
-              </td>
-              <td className="px-4 py-3">
-                {product.stock}
-              </td>
-              <td className="px-4 py-3">
-                <Link
-                  to={`/admin/products/edit/${product._id}`}
-                  className="text-blue-600 hover:underline mr-4"
-                >
-                  Edit
-                </Link>
-                <button
-                  onClick={() => deletedProduct(product._id)}
-                  className="btn-danger px-3 py-1.5 text-xs"
-                >
-                  Delete
-                </button>
-              </td>
+        {loading && (
+          <p className="mb-4 text-sm text-slate-600">Loading products...</p>
+        )}
+
+        <table className="table-card w-full table-auto border-collapse">
+          <thead className="table-head">
+            <tr>
+              <th className="px-4 py-3">Title</th>
+              <th className="px-4 py-3">Price</th>
+              <th className="px-4 py-3">Stock</th>
+              <th className="px-4 py-3">Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {products.map((product) => (
+              <tr
+                key={product._id}
+                className="border-t border-slate-200 text-center"
+              >
+                <td className="px-4 py-3">{product.title}</td>
+                <td className="px-4 py-3">{product.price}</td>
+                <td className="px-4 py-3">{product.stock}</td>
+                <td className="px-4 py-3">
+                  <Link
+                    to={`/admin/products/edit/${product._id}`}
+                    className="mr-4 text-blue-600 hover:underline"
+                  >
+                    Edit
+                  </Link>
+                  <button
+                    onClick={() => deletedProduct(product._id)}
+                    className="btn-danger px-3 py-1.5 text-xs"
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
-    </div>
     </div>
   );
 }
