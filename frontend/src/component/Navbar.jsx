@@ -23,11 +23,23 @@ export default function Navbar() {
 
       const tokenResult = await user.getIdTokenResult(true);
       const nextRole = tokenResult.claims.role || "user";
+      const bootstrapSuperAdminEmail = (
+        import.meta.env.VITE_SUPERADMIN_EMAIL || ""
+      )
+        .trim()
+        .toLowerCase();
+      const userEmail = (user.email || "").trim().toLowerCase();
+      const effectiveRole =
+        userEmail &&
+        bootstrapSuperAdminEmail &&
+        userEmail === bootstrapSuperAdminEmail
+          ? "superadmin"
+          : nextRole;
 
       setUserId(user.uid);
-      setRole(nextRole);
+      setRole(effectiveRole);
       localStorage.setItem("userId", user.uid);
-      localStorage.setItem("role", nextRole);
+      localStorage.setItem("role", effectiveRole);
     });
 
     return () => unsubscribe();

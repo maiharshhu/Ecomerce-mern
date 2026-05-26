@@ -1,5 +1,29 @@
 import { getFirebaseAdmin } from "../utils/firebaseAdmin.js";
 
+const normalizeEmail = (value) => value?.trim().toLowerCase() || "";
+
+const getSuperAdminEmail = () => normalizeEmail(process.env.SUPERADMIN_EMAIL);
+
+const syncSuperAdminClaim = async (firebaseAdmin, decoded) => {
+    const superAdminEmail = getSuperAdminEmail();
+    const decodedEmail = normalizeEmail(decoded.email);
+
+    if (!superAdminEmail || decodedEmail !== superAdminEmail) {
+        return "user";
+    }
+
+    if (decoded.role === "superadmin") {
+        return "superadmin";
+    }
+
+    await firebaseAdmin.auth().setCustomUserClaims(decoded.uid, {
+        ...(decoded.customClaims || {}),
+        role: "superadmin",
+    });
+
+    return "superadmin";
+};
+
 export const authenticate = async (req, res, next) => {
     const authHeader = req.headers.authorization || "";
     const [scheme, token] = authHeader.split(" ");
@@ -15,12 +39,13 @@ export const authenticate = async (req, res, next) => {
         }
 
         const decoded = await firebaseAdmin.auth().verifyIdToken(token);
+        const role = await syncSuperAdminClaim(firebaseAdmin, decoded);
 
         req.user = {
             id: decoded.uid,
             email: decoded.email || "",
             name: decoded.name || "",
-            role: decoded.role || "user",
+            role: role || decoded.role || "user",
         };
 
         return next();

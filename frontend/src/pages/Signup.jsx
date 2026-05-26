@@ -39,9 +39,15 @@ export default function Signup() {
 
       const tokenResult = await credentials.user.getIdTokenResult(true);
       const role = tokenResult.claims.role || "user";
+      const nextRole =
+        role === "superadmin" ||
+        form.email.trim().toLowerCase() ===
+          (import.meta.env.VITE_SUPERADMIN_EMAIL || "").trim().toLowerCase()
+          ? "superadmin"
+          : role;
 
       localStorage.setItem("userId", credentials.user.uid);
-      localStorage.setItem("role", role);
+      localStorage.setItem("role", nextRole);
 
       setMsg("Signup successful. Redirecting...");
       setTimeout(() => navigate("/"), 1000);
