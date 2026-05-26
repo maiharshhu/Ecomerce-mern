@@ -6,6 +6,7 @@ export default function UserManagement() {
   const navigate = useNavigate();
   const role = localStorage.getItem("role");
   const isSuperAdmin = role === "superadmin";
+  const currentUserId = localStorage.getItem("userId");
 
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -39,17 +40,17 @@ export default function UserManagement() {
     await loadUsers();
   };
 
-  const promoteToAdmin = async (uid) => {
+  const setUserRole = async (uid, nextRole) => {
     setUpdatingId(uid);
     try {
       const res = await api.patch(`/admin/users/${uid}/role`, {
-        role: "admin",
+        role: nextRole,
       });
 
       setUsers((prev) =>
         prev.map((user) =>
           user.uid === uid
-            ? { ...user, role: res.data.user?.role || "admin" }
+            ? { ...user, role: res.data.user?.role || nextRole }
             : user,
         ),
       );
@@ -77,7 +78,7 @@ export default function UserManagement() {
               User Management
             </h1>
             <p className="section-subtitle text-sm">
-              Promote users to admin. Only super admin can change roles.
+              Promote or remove admin access. Only super admin can change roles.
             </p>
           </div>
         </div>
@@ -102,6 +103,8 @@ export default function UserManagement() {
               <tbody>
                 {users.map((user) => {
                   const isPromotable = user.role === "user";
+                  const isDemotable = user.role === "admin";
+                  const isCurrentUser = user.uid === currentUserId;
                   return (
                     <tr key={user.uid} className="border-t border-slate-200">
                       <td className="px-4 py-3 text-sm text-slate-900">
@@ -116,18 +119,41 @@ export default function UserManagement() {
                         </span>
                       </td>
                       <td className="px-4 py-3">
-                        <button
-                          type="button"
-                          disabled={!isPromotable || updatingId === user.uid}
-                          onClick={() => promoteToAdmin(user.uid)}
-                          className="btn-primary px-3 py-1.5 text-xs disabled:cursor-not-allowed"
-                        >
-                          {updatingId === user.uid
-                            ? "Updating..."
-                            : isPromotable
-                              ? "Make admin"
-                              : "No action"}
-                        </button>
+                        <div className="flex flex-wrap gap-2">
+                          {isPromotable ? (
+                            <button
+                              type="button"
+                              disabled={updatingId === user.uid}
+                              onClick={() => setUserRole(user.uid, "admin")}
+                              className="btn-primary px-3 py-1.5 text-xs disabled:cursor-not-allowed"
+                            >
+                              {updatingId === user.uid
+                                ? "Updating..."
+                                : "Make admin"}
+                            </button>
+                          ) : null}
+
+                          {isDemotable ? (
+                            <button
+                              type="button"
+                              disabled={
+                                updatingId === user.uid || isCurrentUser
+                              }
+                              onClick={() => setUserRole(user.uid, "user")}
+                              className="btn-ghost px-3 py-1.5 text-xs disabled:cursor-not-allowed"
+                            >
+                              {updatingId === user.uid
+                                ? "Updating..."
+                                : "Remove admin"}
+                            </button>
+                          ) : null}
+
+                          {user.role === "superadmin" ? (
+                            <span className="rounded-full bg-purple-100 px-3 py-1.5 text-xs font-semibold text-purple-700">
+                              Protected
+                            </span>
+                          ) : null}
+                        </div>
                       </td>
                     </tr>
                   );

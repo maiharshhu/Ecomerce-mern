@@ -93,12 +93,12 @@ export default function Navbar() {
                 to="/admin/products"
                 className="btn-ghost px-3 py-2 text-sm"
               >
-                Admin
+                Products
               </Link>
             ) : null}
             {role === "superadmin" ? (
               <Link to="/admin/users" className="btn-ghost px-3 py-2 text-sm">
-                Users
+                Admins
               </Link>
             ) : null}
             <button onClick={logout} className="btn-danger px-3 py-2 text-sm">
