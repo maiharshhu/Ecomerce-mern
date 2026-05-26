@@ -77,17 +77,19 @@ export default function Navbar() {
       </Link>
 
       <div className="flex gap-4 items-center">
-        <Link
-          to="/cart"
-          className="relative text-slate-700 hover:text-blue-700"
-        >
-          Cart
-          {cartCount > 0 && (
-            <span className="absolute -top-2 -right-3 flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-xs text-white">
-              {cartCount}
-            </span>
-          )}
-        </Link>
+        {role !== "admin" && role !== "superadmin" ? (
+          <Link
+            to="/cart"
+            className="relative text-slate-700 hover:text-blue-700"
+          >
+            Cart
+            {cartCount > 0 && (
+              <span className="absolute -top-2 -right-3 flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-xs text-white">
+                {cartCount}
+              </span>
+            )}
+          </Link>
+        ) : null}
 
         {!userId ? (
           <>
@@ -101,11 +103,8 @@ export default function Navbar() {
         ) : (
           <>
             {role === "admin" || role === "superadmin" ? (
-              <Link
-                to="/admin/products"
-                className="btn-ghost px-3 py-2 text-sm"
-              >
-                Products
+              <Link to="/admin" className="btn-ghost px-3 py-2 text-sm">
+                Admin
               </Link>
             ) : null}
             {role === "superadmin" ? (

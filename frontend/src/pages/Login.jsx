@@ -47,9 +47,8 @@ export default function Login() {
       localStorage.setItem("role", nextRole);
 
       setMsg("Login successfully");
-      // redirect to homepage
       setTimeout(() => {
-        navigate("/");
+        navigate(nextRole === "superadmin" ? "/admin" : "/");
       }, 1000);
     } catch (err) {
       setMsg(err.message || "An error occurred");

@@ -7,6 +7,7 @@ import AddProduct from "./admin/AddProduct";
 import EditProduct from "./admin/EditProduct";
 import ProductList from "./admin/ProductList";
 import UserManagement from "./admin/UserManagement";
+import AdminDashboard from "./admin/AdminDashboard";
 import Navbar from "./component/Navbar";
 import Cart from "./pages/Cart";
 import CheckoutAddress from "./pages/CheckoutAddress";
@@ -33,6 +34,7 @@ const router = createBrowserRouter([
       { path: "/product/:id", element: <ProductDetails /> },
 
       // admin routes
+      { path: "/admin", element: <AdminDashboard /> },
       { path: "/admin/products", element: <ProductList /> },
       { path: "/admin/products/add", element: <AddProduct /> },
       { path: "/admin/products/edit/:id", element: <EditProduct /> },

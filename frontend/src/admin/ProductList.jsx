@@ -1,21 +1,55 @@
 import { useEffect, useState } from "react";
 import api from "../api/axios";
 import { Link, useNavigate } from "react-router";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../firebase";
 
 export default function ProductList() {
   const [products, setProducts] = useState([]);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("");
   const [loading, setLoading] = useState(false);
-  const role = localStorage.getItem("role");
-  const isAdmin = role === "admin" || role === "superadmin";
+  const [role, setRole] = useState("");
+  const [authReady, setAuthReady] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!isAdmin) {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        setRole("");
+        setAuthReady(true);
+        return;
+      }
+
+      const tokenResult = await user.getIdTokenResult(true);
+      const bootstrapSuperAdminEmail = (
+        import.meta.env.VITE_SUPERADMIN_EMAIL || ""
+      )
+        .trim()
+        .toLowerCase();
+      const userEmail = (user.email || "").trim().toLowerCase();
+      const nextRole =
+        tokenResult.claims.role ||
+        (bootstrapSuperAdminEmail && userEmail === bootstrapSuperAdminEmail
+          ? "superadmin"
+          : "user");
+
+      setRole(nextRole);
+      setAuthReady(true);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    if (!authReady) {
+      return;
+    }
+
+    if (role !== "admin" && role !== "superadmin") {
       navigate("/");
     }
-  }, [isAdmin, navigate]);
+  }, [authReady, role, navigate]);
 
   const deletedProduct = async (id) => {
     try {
