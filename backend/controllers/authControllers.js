@@ -121,6 +121,16 @@ export const firebaseLogin = async (req, res) => {
             return res.status(400).json({ message: "Firebase user email is missing" });
         }
 
+        let roleFromClaims = decoded.role || "user";
+        const superAdminEmail = getSuperAdminEmail();
+
+        if (superAdminEmail && email === superAdminEmail && roleFromClaims !== "superadmin") {
+            await firebaseAdmin.auth().setCustomUserClaims(decoded.uid, {
+                role: "superadmin",
+            });
+            roleFromClaims = "superadmin";
+        }
+
         let user = await User.findOne({ email });
 
         if (!user) {
@@ -130,7 +140,7 @@ export const firebaseLogin = async (req, res) => {
                 email,
                 firebaseUid: decoded.uid,
                 authProvider: "firebase",
-                role: "user"
+                role: roleFromClaims
             });
         } else {
             const updates = {};
@@ -143,18 +153,16 @@ export const firebaseLogin = async (req, res) => {
                 updates.authProvider = "firebase";
             }
 
+            if (user.role !== roleFromClaims) {
+                updates.role = roleFromClaims;
+            }
+
             if (Object.keys(updates).length > 0) {
                 user = await User.findByIdAndUpdate(user._id, updates, { new: true });
             }
         }
 
-        const superAdminEmail = getSuperAdminEmail();
-        if (superAdminEmail && user.email.toLowerCase() === superAdminEmail && user.role !== "superadmin") {
-            user.role = "superadmin";
-            await user.save();
-        }
-
-        const role = user.role || "user";
+        const role = user.role || roleFromClaims || "user";
         const token = jwt.sign(
             { id: user._id, role },
             process.env.JWT_SECRET,

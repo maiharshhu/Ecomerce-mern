@@ -35,16 +35,16 @@ export default function UserManagement() {
     loadUsers();
   }, [isSuperAdmin, navigate, loadUsers]);
 
-  const promoteToAdmin = async (userId) => {
-    setUpdatingId(userId);
+  const promoteToAdmin = async (uid) => {
+    setUpdatingId(uid);
     try {
-      const res = await api.patch(`/admin/users/${userId}/role`, {
+      const res = await api.patch(`/admin/users/${uid}/role`, {
         role: "admin",
       });
 
       setUsers((prev) =>
         prev.map((user) =>
-          user._id === userId
+          user.uid === uid
             ? { ...user, role: res.data.user?.role || "admin" }
             : user,
         ),
@@ -102,7 +102,7 @@ export default function UserManagement() {
                 {users.map((user) => {
                   const isPromotable = user.role === "user";
                   return (
-                    <tr key={user._id} className="border-t border-slate-200">
+                    <tr key={user.uid} className="border-t border-slate-200">
                       <td className="px-4 py-3 text-sm text-slate-900">
                         {user.name}
                       </td>
@@ -117,11 +117,11 @@ export default function UserManagement() {
                       <td className="px-4 py-3">
                         <button
                           type="button"
-                          disabled={!isPromotable || updatingId === user._id}
-                          onClick={() => promoteToAdmin(user._id)}
+                          disabled={!isPromotable || updatingId === user.uid}
+                          onClick={() => promoteToAdmin(user.uid)}
                           className="rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-slate-300"
                         >
-                          {updatingId === user._id
+                          {updatingId === user.uid
                             ? "Updating..."
                             : isPromotable
                               ? "Make admin"
