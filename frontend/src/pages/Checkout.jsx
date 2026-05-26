@@ -68,9 +68,9 @@ export default function Checkout() {
   );
 
   return (
-    <div className="min-h-[80vh] bg-slate-50 py-8 px-4">
-      <div className="max-w-4xl mx-auto bg-white border border-slate-200 rounded-2xl shadow-sm p-6 sm:p-8">
-        <h1 className="text-2xl font-bold text-slate-900 mb-5">Checkout</h1>
+    <div className="app-page">
+      <div className="page-shell surface-card p-6 sm:p-8">
+        <h1 className="section-title mb-5 text-2xl font-bold">Checkout</h1>
 
         <div className="mb-8">
           <div className="flex items-center justify-between gap-4 mb-3">
@@ -86,7 +86,7 @@ export default function Checkout() {
           </div>
 
           {address.length === 0 ? (
-            <div className="border border-dashed border-slate-300 rounded-xl p-5 bg-slate-50">
+            <div className="soft-panel border-dashed p-5">
               <p className="text-slate-700 font-medium mb-1">
                 No address found
               </p>
@@ -95,7 +95,7 @@ export default function Checkout() {
               </p>
               <Link
                 to="/checkout-address"
-                className="inline-block bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition"
+                className="btn-primary inline-flex px-4 py-2 text-sm"
               >
                 Create New Address
               </Link>
@@ -108,7 +108,7 @@ export default function Checkout() {
                   <label
                     key={addr._id}
                     htmlFor={`addr-${addr._id}`}
-                    className={`block rounded-xl border p-4 cursor-pointer transition ${
+                    className={`block cursor-pointer rounded-xl border p-4 transition ${
                       isSelected
                         ? "border-blue-500 bg-blue-50"
                         : "border-slate-300 bg-white hover:border-slate-400"
@@ -147,7 +147,7 @@ export default function Checkout() {
           <p className="text-slate-700 mb-4">Total Amount: ${total}</p>
           <button
             disabled={!selectedAddress || (cart?.items || []).length === 0}
-            className="w-full bg-green-600 hover:bg-green-700 disabled:bg-slate-300 text-white p-2.5 rounded-lg font-medium transition"
+            className="btn-primary w-full bg-emerald-600 hover:bg-emerald-700"
             onClick={placeOrder}
           >
             Place Order (COD)

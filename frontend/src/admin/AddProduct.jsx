@@ -81,60 +81,64 @@ export default function Addproduct() {
   };
 
   return (
-    <div className="max-w-lg mx-auto mt-10 bg-white p-6 shadow rounded">
-      <h2 className="text-2xl font-bold mb-6">Add New Product</h2>
-      {msg && <p className="mb-3 text-sm text-red-600">{msg}</p>}
-      <form onSubmit={handleSubmit} className="space-y-3">
-        {Object.keys(form).map((key) =>
-          key === "category" ? (
-            <div key={key} className="space-y-2">
-              <select
-                value={categoryChoice}
-                onChange={handleCategoryChange}
-                className="w-full p-2 border border-gray-300 rounded"
-                required
-              >
-                <option value="">Select Category</option>
-                {presetCategories.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-                <option value="Other">Other</option>
-              </select>
-
-              {categoryChoice === "Other" && (
-                <input
-                  type="text"
-                  value={customCategory}
-                  onChange={handleCustomCategoryChange}
-                  placeholder="Enter new category"
-                  className="w-full p-2 border border-gray-300 rounded"
+    <div className="app-page">
+      <div className="page-shell surface-card max-w-lg p-6">
+        <h2 className="section-title mb-6 text-2xl font-bold">
+          Add New Product
+        </h2>
+        {msg && <p className="alert-box alert-error mb-3">{msg}</p>}
+        <form onSubmit={handleSubmit} className="space-y-3">
+          {Object.keys(form).map((key) =>
+            key === "category" ? (
+              <div key={key} className="space-y-2">
+                <select
+                  value={categoryChoice}
+                  onChange={handleCategoryChange}
+                  className="select-field"
                   required
-                />
-              )}
-            </div>
-          ) : (
-            <input
-              key={key}
-              name={key}
-              type={key === "price" || key === "stock" ? "number" : "text"}
-              value={form[key]}
-              onChange={handleChange}
-              placeholder={key.charAt(0).toUpperCase() + key.slice(1)}
-              className="w-full p-2 border border-gray-300 rounded"
-              required={key === "title" || key === "price"}
-            />
-          ),
-        )}
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="w-full bg-blue-500 text-white p-2 rounded disabled:opacity-60"
-        >
-          {isSubmitting ? "Adding..." : "Add Product"}
-        </button>
-      </form>
+                >
+                  <option value="">Select Category</option>
+                  {presetCategories.map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                  <option value="Other">Other</option>
+                </select>
+
+                {categoryChoice === "Other" && (
+                  <input
+                    type="text"
+                    value={customCategory}
+                    onChange={handleCustomCategoryChange}
+                    placeholder="Enter new category"
+                    className="input-field"
+                    required
+                  />
+                )}
+              </div>
+            ) : (
+              <input
+                key={key}
+                name={key}
+                type={key === "price" || key === "stock" ? "number" : "text"}
+                value={form[key]}
+                onChange={handleChange}
+                placeholder={key.charAt(0).toUpperCase() + key.slice(1)}
+                className="input-field"
+                required={key === "title" || key === "price"}
+              />
+            ),
+          )}
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="btn-primary w-full disabled:opacity-60"
+          >
+            {isSubmitting ? "Adding..." : "Add Product"}
+          </button>
+        </form>
+      </div>
     </div>
   );
 }

@@ -81,14 +81,16 @@ export default function Cart() {
   };
 
   if (loading) {
-    return <div className="max-w-4xl mx-auto p-6">Loading cart...</div>;
+    return <div className="app-page page-shell">Loading cart...</div>;
   }
 
   if (!userId) {
     return (
-      <div className="max-w-4xl mx-auto p-6">
-        <h1 className="text-2xl font-bold mb-4">Your Cart</h1>
-        <p className="text-gray-600">Please log in to view your cart.</p>
+      <div className="app-page page-shell">
+        <div className="surface-card p-6">
+          <h1 className="section-title mb-4 text-2xl font-bold">Your Cart</h1>
+          <p className="section-subtitle">Please log in to view your cart.</p>
+        </div>
       </div>
     );
   }
@@ -99,83 +101,87 @@ export default function Cart() {
     0,
   );
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-6">Your Cart</h1>
+    <div className="app-page">
+      <div className="page-shell">
+        <h1 className="section-title mb-6 text-2xl font-bold">Your Cart</h1>
 
-      {items.length === 0 ? (
-        <div className="rounded border border-dashed p-6 text-gray-600">
-          Your cart is empty.
-        </div>
-      ) : (
-        <div className="space-y-4">
-          {items.map((item) => (
-            <div
-              className="flex flex-col gap-4 rounded border p-4 sm:flex-row sm:items-center sm:justify-between"
-              key={item.productId._id}
-            >
-              <div className="flex items-center gap-4">
-                <img
-                  src={item.productId.image}
-                  alt={item.productId.title}
-                  className="h-16 w-16 rounded object-cover"
-                />
-                <div>
-                  <h2 className="text-lg font-semibold">
-                    {item.productId.title}
-                  </h2>
-                  <p className="text-gray-600">
-                    ${item.productId.price.toFixed(2)} each
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-2 rounded border px-2 py-1">
-                  <button
-                    onClick={() =>
-                      updateQty(item.productId._id, item.quantity - 1)
-                    }
-                    className="px-2 py-1"
-                  >
-                    -
-                  </button>
-                  <span className="min-w-6 text-center">{item.quantity}</span>
-                  <button
-                    onClick={() =>
-                      updateQty(item.productId._id, item.quantity + 1)
-                    }
-                    className="px-2 py-1"
-                  >
-                    +
-                  </button>
-                </div>
-
-                <p className="min-w-24 text-right font-semibold">
-                  ${(item.productId.price * item.quantity).toFixed(2)}
-                </p>
-
-                <button
-                  onClick={() => removeItem(item.productId._id)}
-                  className="text-sm font-medium text-red-500"
-                >
-                  Remove
-                </button>
-              </div>
-            </div>
-          ))}
-          <div className="mt-4 text-right">
-            <h2 className="text-xl font-semibold">
-              Total: ${total.toFixed(2)}
-            </h2>
+        {items.length === 0 ? (
+          <div className="soft-panel border-dashed p-6 text-slate-600">
+            Your cart is empty.
           </div>
-          <button
-            className="w-full bg-blue-500 text-white p-2 rounded"
-            onClick={() => navigate("/checkout-address")}
-          >
-            Proceed to checkout
-          </button>
-        </div>
-      )}
+        ) : (
+          <div className="space-y-4">
+            {items.map((item) => (
+              <div
+                className="surface-card flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:justify-between"
+                key={item.productId._id}
+              >
+                <div className="flex items-center gap-4">
+                  <img
+                    src={item.productId.image}
+                    alt={item.productId.title}
+                    className="h-16 w-16 rounded-xl object-cover"
+                  />
+                  <div>
+                    <h2 className="text-lg font-semibold text-slate-900">
+                      {item.productId.title}
+                    </h2>
+                    <p className="text-slate-600">
+                      ${item.productId.price.toFixed(2)} each
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2 rounded-xl border border-slate-200 px-2 py-1">
+                    <button
+                      onClick={() =>
+                        updateQty(item.productId._id, item.quantity - 1)
+                      }
+                      className="rounded-lg px-2 py-1 hover:bg-slate-100"
+                    >
+                      -
+                    </button>
+                    <span className="min-w-6 text-center text-slate-900">
+                      {item.quantity}
+                    </span>
+                    <button
+                      onClick={() =>
+                        updateQty(item.productId._id, item.quantity + 1)
+                      }
+                      className="rounded-lg px-2 py-1 hover:bg-slate-100"
+                    >
+                      +
+                    </button>
+                  </div>
+
+                  <p className="min-w-24 text-right font-semibold text-slate-900">
+                    ${(item.productId.price * item.quantity).toFixed(2)}
+                  </p>
+
+                  <button
+                    onClick={() => removeItem(item.productId._id)}
+                    className="text-sm font-medium text-red-600 hover:text-red-700"
+                  >
+                    Remove
+                  </button>
+                </div>
+              </div>
+            ))}
+            <div className="mt-4 text-right">
+              <h2 className="text-xl font-semibold text-slate-900">
+                Total: ${total.toFixed(2)}
+              </h2>
+            </div>
+            <button
+              className="btn-primary w-full"
+              onClick={() => navigate("/checkout-address")}
+            >
+              Proceed to checkout
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

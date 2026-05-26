@@ -67,13 +67,13 @@ export default function Login() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 px-4">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-sm">
-        <h2 className="text-2xl font-bold mb-6 text-center">
+    <div className="app-page flex items-center justify-center">
+      <div className="surface-card w-full max-w-sm p-8">
+        <h2 className="section-title mb-6 text-center text-2xl font-bold">
           Login to Your Account
         </h2>
         {msg && (
-          <div className="mb-4 text-center text-sm text-red-600 font-medium">
+          <div className="alert-box alert-error mb-4 text-center font-medium">
             {msg}
           </div>
         )}
@@ -85,7 +85,7 @@ export default function Login() {
             placeholder="enter email"
             value={form.email}
             onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500"
+            className="input-field"
             required
           />
 
@@ -96,13 +96,13 @@ export default function Login() {
             value={form.password}
             onChange={handleChange}
             required
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500"
+            className="input-field"
           />
 
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 disabled:opacity-60"
+            className="btn-primary w-full disabled:opacity-60"
           >
             {isSubmitting ? "Logging in..." : "Login"}
           </button>
@@ -111,7 +111,7 @@ export default function Login() {
         <button
           type="button"
           onClick={handleReset}
-          className="mt-3 w-full text-sm font-semibold text-blue-600 hover:text-blue-700"
+          className="mt-3 w-full text-sm font-semibold text-blue-700 hover:text-blue-800"
         >
           Forgot password?
         </button>

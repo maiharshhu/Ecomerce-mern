@@ -95,21 +95,21 @@ export default function CheckoutAddress() {
   };
 
   return (
-    <div className="min-h-[80vh] bg-slate-50 py-10 px-4">
-      <div className="max-w-2xl mx-auto bg-white border border-slate-200 rounded-2xl shadow-sm p-6 sm:p-8">
-        <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-2">
+    <div className="app-page">
+      <div className="page-shell surface-card max-w-2xl p-6 sm:p-8">
+        <h1 className="section-title mb-2 text-2xl font-bold sm:text-3xl">
           Delivery Address
         </h1>
-        <p className="text-slate-600 mb-6">
+        <p className="section-subtitle mb-6">
           Add your shipping details to continue checkout.
         </p>
 
         {isLoading ? (
-          <div className="mb-6 rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600">
+          <div className="alert-box alert-info mb-6">
             Loading saved addresses...
           </div>
         ) : addresses.length > 0 ? (
-          <div className="mb-6 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+          <div className="soft-panel mb-6 p-4">
             <div className="mb-3 flex items-center justify-between gap-3">
               <h2 className="text-lg font-semibold text-slate-900">
                 Saved Addresses
@@ -122,7 +122,7 @@ export default function CheckoutAddress() {
                     state: { selectedAddressId },
                   })
                 }
-                className="rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-blue-700 disabled:bg-blue-300"
+                className="btn-primary px-3 py-1.5 text-xs"
               >
                 Use Selected
               </button>
@@ -176,7 +176,7 @@ export default function CheckoutAddress() {
           <h2 className="text-lg font-semibold text-slate-900">
             Add New Address
           </h2>
-          <p className="text-sm text-slate-600">
+          <p className="section-subtitle text-sm">
             Fill in the form if you want to add another delivery address.
           </p>
         </div>
@@ -202,22 +202,18 @@ export default function CheckoutAddress() {
                   placeholder={`Enter ${fieldLabels[key]}`}
                   onChange={handleChange}
                   required
-                  className="w-full px-3 py-2.5 border border-slate-300 rounded-lg outline-none transition focus:ring-2 focus:ring-blue-200 focus:border-blue-500"
+                  className="input-field"
                 />
               </div>
             ))}
           </div>
 
-          {error ? (
-            <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg p-2">
-              {error}
-            </p>
-          ) : null}
+          {error ? <p className="alert-box alert-error">{error}</p> : null}
 
           <button
             type="submit"
             disabled={isSaving}
-            className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-medium py-2.5 rounded-lg transition"
+            className="btn-primary w-full disabled:opacity-60"
           >
             {isSaving ? "Saving..." : "Save Address"}
           </button>

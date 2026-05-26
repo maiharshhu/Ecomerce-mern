@@ -87,29 +87,30 @@ export default function ProductList() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto mt-10">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold">Product List</h2>
+    <div className="app-page">
+      <div className="page-shell">
+      <div className="flex justify-between items-center mb-6 gap-4">
+        <h2 className="section-title text-2xl font-bold">Product List</h2>
         <Link
           to="/admin/products/add"
-          className="bg-blue-500 text-white px-4 py-2 rounded"
+          className="btn-primary"
         >
           Add New Product
         </Link>
       </div>
 
-      <form onSubmit={handleFilter} className="grid gap-3 md:grid-cols-3 mb-6">
+      <form onSubmit={handleFilter} className="soft-panel grid gap-3 p-4 md:grid-cols-3 mb-6">
         <input
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search title"
-          className="border border-gray-300 rounded px-3 py-2"
+          className="input-field"
         />
         <select
           value={category}
           onChange={(e) => setCategory(e.target.value)}
-          className="border border-gray-300 rounded px-3 py-2"
+          className="select-field"
         >
           <option value="">All Categories</option>
           <option value="Laptops">Laptops</option>
@@ -119,14 +120,14 @@ export default function ProductList() {
         <div className="flex gap-2">
           <button
             type="submit"
-            className="flex-1 bg-gray-900 text-white px-4 py-2 rounded"
+            className="btn-secondary flex-1"
           >
             Filter
           </button>
           <button
             type="button"
             onClick={resetFilters}
-            className="flex-1 border border-gray-300 px-4 py-2 rounded"
+            className="btn-ghost flex-1"
           >
             Reset
           </button>
@@ -134,31 +135,31 @@ export default function ProductList() {
       </form>
 
       {loading && (
-        <p className="mb-4 text-sm text-gray-600">Loading products...</p>
+        <p className="mb-4 text-sm text-slate-600">Loading products...</p>
       )}
 
-      <table className="w-full table-auto border-collapse border border-grey-200">
-        <thead>
-          <tr className="bg-gray-100">
-            <th className="border border-gray-200 px-4 py-2">Title</th>
-            <th className="border border-gray-200 px-4 py-2">Price</th>
-            <th className="border border-gray-200 px-4 py-2">Stock</th>
-            <th className="border border-gray-200 px-4 py-2">Actions</th>
+      <table className="w-full table-auto border-collapse table-card">
+        <thead className="table-head">
+          <tr>
+            <th className="px-4 py-3">Title</th>
+            <th className="px-4 py-3">Price</th>
+            <th className="px-4 py-3">Stock</th>
+            <th className="px-4 py-3">Actions</th>
           </tr>
         </thead>
         <tbody>
           {products.map((product) => (
-            <tr key={product._id} className="text-center">
-              <td className="border border-gray-200 px-4 py-2">
+            <tr key={product._id} className="text-center border-t border-slate-200">
+              <td className="px-4 py-3">
                 {product.title}
               </td>
-              <td className="border border-gray-200 px-4 py-2">
+              <td className="px-4 py-3">
                 {product.price}
               </td>
-              <td className="border border-gray-200 px-4 py-2">
+              <td className="px-4 py-3">
                 {product.stock}
               </td>
-              <td className="border border-gray-200 px-4 py-2">
+              <td className="px-4 py-3">
                 <Link
                   to={`/admin/products/edit/${product._id}`}
                   className="text-blue-600 hover:underline mr-4"
@@ -167,7 +168,7 @@ export default function ProductList() {
                 </Link>
                 <button
                   onClick={() => deletedProduct(product._id)}
-                  className="text-white bg-red-600 px-3 py-1 rounded hover:bg-red-700"
+                  className="btn-danger px-3 py-1.5 text-xs"
                 >
                   Delete
                 </button>
@@ -176,6 +177,8 @@ export default function ProductList() {
           ))}
         </tbody>
       </table>
+      </div>
+    </div>
     </div>
   );
 }

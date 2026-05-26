@@ -59,16 +59,19 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="flex justify-between p-4 shadow">
-      <Link to="/" className="font-bold text-xl">
+    <nav className="surface-card mx-4 mt-4 flex items-center justify-between gap-4 px-4 py-3">
+      <Link to="/" className="section-title text-xl font-bold">
         QuikShopee
       </Link>
 
       <div className="flex gap-4 items-center">
-        <Link to="/cart" className="relative text-xl">
+        <Link
+          to="/cart"
+          className="relative text-slate-700 hover:text-blue-700"
+        >
           Cart
           {cartCount > 0 && (
-            <span className="absolute -top-2 -right-3 bg-red-500 text-white rounded-full text-xs w-5 h-5 flex items-center justify-center">
+            <span className="absolute -top-2 -right-3 flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-xs text-white">
               {cartCount}
             </span>
           )}
@@ -76,26 +79,29 @@ export default function Navbar() {
 
         {!userId ? (
           <>
-            <Link to="/login" className="text-lg">
+            <Link to="/login" className="btn-ghost px-3 py-2 text-sm">
               Login
             </Link>
-            <Link to="/signup" className="text-lg">
+            <Link to="/signup" className="btn-primary px-3 py-2 text-sm">
               Signup
             </Link>
           </>
         ) : (
           <>
             {role === "admin" || role === "superadmin" ? (
-              <Link to="/admin/products" className="text-lg">
+              <Link
+                to="/admin/products"
+                className="btn-ghost px-3 py-2 text-sm"
+              >
                 Admin
               </Link>
             ) : null}
             {role === "superadmin" ? (
-              <Link to="/admin/users" className="text-lg">
+              <Link to="/admin/users" className="btn-ghost px-3 py-2 text-sm">
                 Users
               </Link>
             ) : null}
-            <button onClick={logout} className="text-lg">
+            <button onClick={logout} className="btn-danger px-3 py-2 text-sm">
               Logout
             </button>
           </>

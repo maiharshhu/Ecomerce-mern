@@ -99,54 +99,53 @@ export default function EditProduct() {
   };
 
   return (
-    <div className="max-w-lg mx-auto mt-10 bg-white p-6 shadow rounded">
-      <h2 className="text-2xl font-bold mb-6">Edit Product</h2>
-      <form onSubmit={handleSubmit} className="space-y-3">
-        {allowedFields.map((key) =>
-          key === "category" ? (
-            <div key={key} className="space-y-2">
-              <select
-                value={categoryChoice}
-                onChange={handleCategoryChange}
-                className="w-full p-2 border border-gray-300 rounded"
-              >
-                <option value="">Select Category</option>
-                {presetCategories.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-                <option value="Other">Other</option>
-              </select>
+    <div className="app-page">
+      <div className="page-shell surface-card max-w-lg p-6">
+        <h2 className="section-title mb-6 text-2xl font-bold">Edit Product</h2>
+        <form onSubmit={handleSubmit} className="space-y-3">
+          {allowedFields.map((key) =>
+            key === "category" ? (
+              <div key={key} className="space-y-2">
+                <select
+                  value={categoryChoice}
+                  onChange={handleCategoryChange}
+                  className="select-field"
+                >
+                  <option value="">Select Category</option>
+                  {presetCategories.map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                  <option value="Other">Other</option>
+                </select>
 
-              {categoryChoice === "Other" && (
-                <input
-                  type="text"
-                  value={customCategory}
-                  onChange={handleCustomCategoryChange}
-                  placeholder="Enter new category"
-                  className="w-full p-2 border border-gray-300 rounded"
-                />
-              )}
-            </div>
-          ) : (
-            <input
-              key={key}
-              name={key}
-              value={form[key]}
-              onChange={handleChange}
-              placeholder={key}
-              className="w-full p-2 border border-gray-300 rounded"
-            />
-          ),
-        )}
-        <button
-          type="submit"
-          className="w-full bg-blue-500 text-white py-2 rounded"
-        >
-          Update
-        </button>
-      </form>
+                {categoryChoice === "Other" && (
+                  <input
+                    type="text"
+                    value={customCategory}
+                    onChange={handleCustomCategoryChange}
+                    placeholder="Enter new category"
+                    className="input-field"
+                  />
+                )}
+              </div>
+            ) : (
+              <input
+                key={key}
+                name={key}
+                value={form[key]}
+                onChange={handleChange}
+                placeholder={key}
+                className="input-field"
+              />
+            ),
+          )}
+          <button type="submit" className="btn-primary w-full">
+            Update
+          </button>
+        </form>
+      </div>
     </div>
   );
 }
