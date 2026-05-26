@@ -23,8 +23,10 @@ export const loginUser = async (req, res) => {
         }
 
         // generate jwt token
+        const role = user.role || "user";
+
         const token = jwt.sign(
-            { id: user._id },
+            { id: user._id, role },
             process.env.JWT_SECRET,
             { expiresIn: "1d" }
         );
@@ -34,7 +36,8 @@ export const loginUser = async (req, res) => {
             user: {
                 id: user._id,
                 name: user.name,
-                email: user.email
+                email: user.email,
+                role
             }
         })
     }
@@ -67,7 +70,8 @@ export const signupUser = async (req, res) => {
         await User.create({
             name,
             email: normalizedEmail,
-            password: hashPassword
+            password: hashPassword,
+            role: "user"
         });
 
         res.status(201).json({ message: "User Registered Successfully" })

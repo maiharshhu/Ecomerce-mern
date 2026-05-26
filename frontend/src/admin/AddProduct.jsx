@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import api from "../api/axios.js";
 import { useNavigate } from "react-router";
 
@@ -13,12 +13,19 @@ export default function Addproduct() {
     image: "",
     stock: "",
   });
+  const role = localStorage.getItem("role");
   const [categoryChoice, setCategoryChoice] = useState("");
   const [customCategory, setCustomCategory] = useState("");
 
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [msg, setMsg] = useState("");
+
+  useEffect(() => {
+    if (role !== "admin") {
+      navigate("/");
+    }
+  }, [role, navigate]);
 
   const handleChange = (e) => {
     setForm({

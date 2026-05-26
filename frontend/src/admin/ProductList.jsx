@@ -1,12 +1,20 @@
 import { useEffect, useState } from "react";
 import api from "../api/axios";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 
 export default function ProductList() {
   const [products, setProducts] = useState([]);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("");
   const [loading, setLoading] = useState(false);
+  const role = localStorage.getItem("role");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (role !== "admin") {
+      navigate("/");
+    }
+  }, [role, navigate]);
 
   const deletedProduct = async (id) => {
     try {

@@ -6,6 +6,7 @@ export default function Navbar() {
   const navigate = useNavigate();
   const [cartCount, setCartCount] = useState(0);
   const userId = localStorage.getItem("userId");
+  const role = localStorage.getItem("role");
 
   useEffect(() => {
     const loadCart = async () => {
@@ -59,9 +60,11 @@ export default function Navbar() {
           </>
         ) : (
           <>
-            <Link to="/admin/products" className="text-lg">
-              Admin
-            </Link>
+            {role === "admin" ? (
+              <Link to="/admin/products" className="text-lg">
+                Admin
+              </Link>
+            ) : null}
             <button onClick={logout} className="text-lg">
               Logout
             </button>

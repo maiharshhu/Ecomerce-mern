@@ -7,6 +7,7 @@ const presetCategories = ["Laptops", "Mobiles", "Tablets"];
 export default function EditProduct() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const role = localStorage.getItem("role");
   const [form, setForm] = useState({
     title: "",
     description: "",
@@ -28,6 +29,11 @@ export default function EditProduct() {
   ];
 
   useEffect(() => {
+    if (role !== "admin") {
+      navigate("/");
+      return;
+    }
+
     (async () => {
       try {
         const res = await api.get(`/products`);
@@ -46,7 +52,7 @@ export default function EditProduct() {
         console.error("Failed to load product:", error);
       }
     })();
-  }, [id]);
+  }, [id, role, navigate]);
 
   const handleChange = (e) => {
     setForm({
