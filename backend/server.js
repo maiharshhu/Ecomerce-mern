@@ -20,10 +20,9 @@ if (!process.env.JWT_SECRET) {
 
 const app = express();
 
-// Allow only trusted frontend origins. You can set `FRONTEND_URL` in Vercel
-// to your deployed frontend (e.g. https://ecomerce-mern-tawny.vercel.app).
+// Allow only trusted frontend origins. Configure both URLs for production and development.
 const allowedOrigins = [
-    process.env.FRONTEND_URL,
+    process.env.FRONTEND_URL || 'https://ecomerce-mern-tawny.vercel.app',
     'https://ecomerce-mern-tawny.vercel.app',
     'http://localhost:5173',
     'http://localhost:3000',
@@ -31,12 +30,15 @@ const allowedOrigins = [
 
 app.use(cors({
     origin: (origin, callback) => {
-        // allow requests with no origin (like curl, Postman)
+        // allow requests with no origin (like curl, Postman, mobile apps)
         if (!origin) return callback(null, true);
         if (allowedOrigins.includes(origin)) return callback(null, true);
+        console.error(`CORS blocked origin: ${origin}`);
         return callback(new Error('CORS policy: Origin not allowed'));
     },
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -52,8 +54,15 @@ app.get('/', (req, res) => {
 
 
 
+const port = process.env.PORT || 5001;
+
 connectDB();
 
-app.listen(process.env.PORT || 5001, () => {
-    console.log("server is running on 5001 port")
-});
+// Vercel provides the HTTP server; only listen locally.
+if (!process.env.VERCEL) {
+    app.listen(port, () => {
+        console.log(`server is running on ${port} port`);
+    });
+}
+
+export default app;
