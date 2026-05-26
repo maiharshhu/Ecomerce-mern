@@ -4,7 +4,6 @@ import {
   signInWithEmailAndPassword,
   sendPasswordResetEmail,
 } from "firebase/auth";
-import api from "../api/axios";
 import { auth } from "../firebase";
 
 export default function Login() {
@@ -35,12 +34,11 @@ export default function Login() {
         form.email,
         form.password,
       );
-      const idToken = await credentials.user.getIdToken();
-      const res = await api.post("/auth/firebase", { idToken });
+      const tokenResult = await credentials.user.getIdTokenResult(true);
+      const role = tokenResult.claims.role || "user";
 
-      localStorage.setItem("token", res.data.token);
-      localStorage.setItem("userId", res.data.user.id);
-      localStorage.setItem("role", res.data.user.role || "user");
+      localStorage.setItem("userId", credentials.user.uid);
+      localStorage.setItem("role", role);
 
       setMsg("Login successfully");
       // redirect to homepage
@@ -48,7 +46,7 @@ export default function Login() {
         navigate("/");
       }, 1000);
     } catch (err) {
-      setMsg(err.response?.data?.message || err.message || "An error occurred");
+      setMsg(err.message || "An error occurred");
     } finally {
       setIsSubmitting(false);
     }

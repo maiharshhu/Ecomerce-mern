@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import api from "../api/axios";
 import { auth } from "../firebase";
 
 export default function Signup() {
@@ -38,17 +37,16 @@ export default function Signup() {
         await updateProfile(credentials.user, { displayName: form.name });
       }
 
-      const idToken = await credentials.user.getIdToken();
-      const response = await api.post("/auth/firebase", { idToken });
+      const tokenResult = await credentials.user.getIdTokenResult(true);
+      const role = tokenResult.claims.role || "user";
 
-      localStorage.setItem("token", response.data.token);
-      localStorage.setItem("userId", response.data.user.id);
-      localStorage.setItem("role", response.data.user.role || "user");
+      localStorage.setItem("userId", credentials.user.uid);
+      localStorage.setItem("role", role);
 
       setMsg("Signup successful. Redirecting...");
       setTimeout(() => navigate("/"), 1000);
     } catch (err) {
-      setMsg(err.response?.data?.message || err.message || "An Error occured");
+      setMsg(err.message || "An Error occured");
     } finally {
       setIsSubmitting(false);
     }

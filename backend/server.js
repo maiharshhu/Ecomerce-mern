@@ -2,7 +2,6 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import connectDB, { getMongoUri } from './config/db.js';
-import authRoutes from './routes/authRoutes.js';
 import productRoutes from './routes/productsRoutes.js';
 import cartRoutes from './routes/cart.js';
 import addressRoutes from './routes/address.js';
@@ -13,10 +12,6 @@ dotenv.config();
 
 if (!getMongoUri()) {
     throw new Error("MONGO_URI or MONGODB_URI is required in backend/.env");
-}
-
-if (!process.env.JWT_SECRET) {
-    throw new Error("JWT_SECRET is required in backend/.env");
 }
 
 const app = express();
@@ -44,7 +39,6 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/cart', cartRoutes);

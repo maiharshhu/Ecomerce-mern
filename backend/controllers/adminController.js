@@ -1,7 +1,5 @@
 import { getFirebaseAdmin } from "../utils/firebaseAdmin.js";
 
-const getRole = (claims) => claims?.role || "user";
-
 const normalizeEmail = (value) => value?.trim().toLowerCase() || "";
 
 export const listUsers = async (req, res) => {
@@ -16,7 +14,7 @@ export const listUsers = async (req, res) => {
             uid: user.uid,
             name: user.displayName || user.email?.split("@")[0] || "User",
             email: user.email || "",
-            role: getRole(user.customClaims),
+            role: user.customClaims?.role || "user",
             disabled: user.disabled || false,
             createdAt: user.metadata?.creationTime || null,
         }));
@@ -50,7 +48,7 @@ export const updateUserRole = async (req, res) => {
             return res.status(400).json({ message: "Cannot modify superadmin" });
         }
 
-        if (getRole(target.customClaims) === "superadmin") {
+        if (target.customClaims?.role === "superadmin") {
             return res.status(400).json({ message: "Cannot modify superadmin" });
         }
 

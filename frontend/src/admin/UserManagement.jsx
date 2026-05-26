@@ -35,6 +35,10 @@ export default function UserManagement() {
     loadUsers();
   }, [isSuperAdmin, navigate, loadUsers]);
 
+  const refreshList = async () => {
+    await loadUsers();
+  };
+
   const promoteToAdmin = async (uid) => {
     setUpdatingId(uid);
     try {
@@ -49,6 +53,7 @@ export default function UserManagement() {
             : user,
         ),
       );
+      await refreshList();
     } catch (err) {
       setError(err.response?.data?.message || "Unable to update role");
     } finally {

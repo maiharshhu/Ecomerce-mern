@@ -6,7 +6,7 @@ import {
     updateProduct,
     deleteProduct
 } from "../controllers/productController.js"
-import { authenticate, requireAdmin } from "../middleware/auth.js";
+import { authenticate, requireAdmin } from "../middleware/firebaseAuth.js";
 
 
 const router = express.Router();

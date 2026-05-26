@@ -1,12 +1,37 @@
 import { Link, useNavigate } from "react-router";
 import { useEffect, useState } from "react";
+import { onAuthStateChanged, signOut } from "firebase/auth";
 import api from "../api/axios";
+import { auth } from "../firebase";
 
 export default function Navbar() {
   const navigate = useNavigate();
   const [cartCount, setCartCount] = useState(0);
-  const userId = localStorage.getItem("userId");
-  const role = localStorage.getItem("role");
+  const [userId, setUserId] = useState(localStorage.getItem("userId") || "");
+  const [role, setRole] = useState(localStorage.getItem("role") || "");
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        setUserId("");
+        setRole("");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        setCartCount(0);
+        return;
+      }
+
+      const tokenResult = await user.getIdTokenResult(true);
+      const nextRole = tokenResult.claims.role || "user";
+
+      setUserId(user.uid);
+      setRole(nextRole);
+      localStorage.setItem("userId", user.uid);
+      localStorage.setItem("role", nextRole);
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   useEffect(() => {
     const loadCart = async () => {
@@ -30,7 +55,7 @@ export default function Navbar() {
   const logout = () => {
     localStorage.clear();
     setCartCount(0);
-    navigate("/login");
+    signOut(auth).finally(() => navigate("/login"));
   };
 
   return (
