@@ -72,6 +72,22 @@ export const getProducts = async (req, res) => {
     }
 }
 
+// get a single product by id
+export const getProductById = async (req, res) => {
+    try {
+        const product = await Product.findById(req.params.id);
+
+        if (!product) {
+            return res.status(404).json({ message: 'Product not found' });
+        }
+
+        return res.json(product);
+    } catch (error) {
+        console.error("getProductById error:", error);
+        return res.status(400).json({ message: 'Invalid product id' });
+    }
+}
+
 // update a product
 export const updateProduct = async (req, res) => {
     try {

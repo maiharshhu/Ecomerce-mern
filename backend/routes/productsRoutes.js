@@ -2,6 +2,7 @@ import express from 'express';
 import {
     createProduct,
     getProducts,
+    getProductById,
     updateProduct,
     deleteProduct
 } from "../controllers/productController.js"
@@ -20,5 +21,8 @@ router.put('/update/:id', updateProduct);
 
 // route to delete a product
 router.delete('/delete/:id', deleteProduct);
+
+// route to get a product by id
+router.get('/:id', getProductById);
 
 export default router;
