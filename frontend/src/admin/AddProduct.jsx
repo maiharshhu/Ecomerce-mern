@@ -1,8 +1,6 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import api from "../api/axios.js";
 import { useNavigate } from "react-router";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "../firebase";
 
 const presetCategories = ["Laptops", "Mobiles", "Tablets"];
 
@@ -15,52 +13,12 @@ export default function Addproduct() {
     image: "",
     stock: "",
   });
-  const [role, setRole] = useState("");
-  const [authReady, setAuthReady] = useState(false);
   const [categoryChoice, setCategoryChoice] = useState("");
   const [customCategory, setCustomCategory] = useState("");
 
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [msg, setMsg] = useState("");
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (!user) {
-        setRole("");
-        setAuthReady(true);
-        return;
-      }
-
-      const tokenResult = await user.getIdTokenResult(true);
-      const bootstrapSuperAdminEmail = (
-        import.meta.env.VITE_SUPERADMIN_EMAIL || ""
-      )
-        .trim()
-        .toLowerCase();
-      const userEmail = (user.email || "").trim().toLowerCase();
-      const nextRole =
-        tokenResult.claims.role ||
-        (bootstrapSuperAdminEmail && userEmail === bootstrapSuperAdminEmail
-          ? "superadmin"
-          : "user");
-
-      setRole(nextRole);
-      setAuthReady(true);
-    });
-
-    return () => unsubscribe();
-  }, []);
-
-  useEffect(() => {
-    if (!authReady) {
-      return;
-    }
-
-    if (role !== "admin" && role !== "superadmin") {
-      navigate("/");
-    }
-  }, [authReady, role, navigate]);
 
   const handleChange = (e) => {
     setForm({

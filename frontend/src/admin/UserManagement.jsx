@@ -1,14 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
-import { useNavigate } from "react-router";
 import api from "../api/axios";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "../firebase";
+import { useAdminAuth } from "../components/ProtectedRoute";
 
 export default function UserManagement() {
-  const navigate = useNavigate();
-  const [role, setRole] = useState("");
-  const [currentUserId, setCurrentUserId] = useState("");
-  const [authReady, setAuthReady] = useState(false);
+  const { user: currentUser, role } = useAdminAuth();
+  const currentUserId = currentUser?.uid || "";
 
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -30,47 +26,8 @@ export default function UserManagement() {
   }, []);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (!user) {
-        setRole("");
-        setCurrentUserId("");
-        setAuthReady(true);
-        return;
-      }
-
-      const tokenResult = await user.getIdTokenResult(true);
-      const bootstrapSuperAdminEmail = (
-        import.meta.env.VITE_SUPERADMIN_EMAIL || ""
-      )
-        .trim()
-        .toLowerCase();
-      const userEmail = (user.email || "").trim().toLowerCase();
-      const nextRole =
-        tokenResult.claims.role ||
-        (bootstrapSuperAdminEmail && userEmail === bootstrapSuperAdminEmail
-          ? "superadmin"
-          : "user");
-
-      setRole(nextRole);
-      setCurrentUserId(user.uid);
-      setAuthReady(true);
-    });
-
-    return () => unsubscribe();
-  }, []);
-
-  useEffect(() => {
-    if (!authReady) {
-      return;
-    }
-
-    if (role !== "superadmin") {
-      navigate("/");
-      return;
-    }
-
     loadUsers();
-  }, [authReady, role, navigate, loadUsers]);
+  }, [loadUsers]);
 
   const refreshList = async () => {
     await loadUsers();

@@ -1,47 +1,10 @@
-import { Link, useNavigate } from "react-router";
-import { useEffect, useState } from "react";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "../firebase";
+import { Link } from "react-router";
+import { useAdminAuth } from "../components/ProtectedRoute";
 
 export default function AdminDashboard() {
-  const navigate = useNavigate();
-  const [role, setRole] = useState("");
-  const [authReady, setAuthReady] = useState(false);
+  const { role, loading } = useAdminAuth();
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (!user) {
-        setRole("");
-        setAuthReady(true);
-        navigate("/login");
-        return;
-      }
-
-      const tokenResult = await user.getIdTokenResult(true);
-      const bootstrapSuperAdminEmail = (
-        import.meta.env.VITE_SUPERADMIN_EMAIL || ""
-      )
-        .trim()
-        .toLowerCase();
-      const userEmail = (user.email || "").trim().toLowerCase();
-      const nextRole =
-        tokenResult.claims.role ||
-        (bootstrapSuperAdminEmail && userEmail === bootstrapSuperAdminEmail
-          ? "superadmin"
-          : "user");
-
-      setRole(nextRole);
-      setAuthReady(true);
-
-      if (nextRole !== "admin" && nextRole !== "superadmin") {
-        navigate("/");
-      }
-    });
-
-    return () => unsubscribe();
-  }, [navigate]);
-
-  if (!authReady) {
+  if (loading) {
     return (
       <div className="app-page">
         <div className="page-shell alert-box alert-info">

@@ -13,6 +13,7 @@ import Cart from "./pages/Cart";
 import CheckoutAddress from "./pages/CheckoutAddress";
 import Checkout from "./pages/Checkout";
 import OrderSuccess from "./pages/OrderSuccess";
+import { ProtectedRoute } from "./components/ProtectedRoute";
 
 function Layout() {
   return (
@@ -34,11 +35,46 @@ const router = createBrowserRouter([
       { path: "/product/:id", element: <ProductDetails /> },
 
       // admin routes
-      { path: "/admin", element: <AdminDashboard /> },
-      { path: "/admin/products", element: <ProductList /> },
-      { path: "/admin/products/add", element: <AddProduct /> },
-      { path: "/admin/products/edit/:id", element: <EditProduct /> },
-      { path: "/admin/users", element: <UserManagement /> },
+      {
+        path: "/admin",
+        element: (
+          <ProtectedRoute requiredRole="admin">
+            <AdminDashboard />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/admin/products",
+        element: (
+          <ProtectedRoute requiredRole="admin">
+            <ProductList />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/admin/products/add",
+        element: (
+          <ProtectedRoute requiredRole="admin">
+            <AddProduct />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/admin/products/edit/:id",
+        element: (
+          <ProtectedRoute requiredRole="admin">
+            <EditProduct />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/admin/users",
+        element: (
+          <ProtectedRoute requiredSuperAdminOnly>
+            <UserManagement />
+          </ProtectedRoute>
+        ),
+      },
       { path: "/checkout-address", element: <CheckoutAddress /> },
       { path: "/checkout", element: <Checkout /> },
       { path: "/order-success/:id", element: <OrderSuccess /> },
