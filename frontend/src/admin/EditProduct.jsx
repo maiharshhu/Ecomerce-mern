@@ -8,6 +8,7 @@ export default function EditProduct() {
   const { id } = useParams();
   const navigate = useNavigate();
   const role = localStorage.getItem("role");
+  const isAdmin = role === "admin" || role === "superadmin";
   const [form, setForm] = useState({
     title: "",
     description: "",
@@ -29,7 +30,7 @@ export default function EditProduct() {
   ];
 
   useEffect(() => {
-    if (role !== "admin") {
+    if (!isAdmin) {
       navigate("/");
       return;
     }
@@ -52,7 +53,7 @@ export default function EditProduct() {
         console.error("Failed to load product:", error);
       }
     })();
-  }, [id, role, navigate]);
+  }, [id, isAdmin, navigate]);
 
   const handleChange = (e) => {
     setForm({

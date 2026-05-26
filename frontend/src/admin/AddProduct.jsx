@@ -14,6 +14,7 @@ export default function Addproduct() {
     stock: "",
   });
   const role = localStorage.getItem("role");
+  const isAdmin = role === "admin" || role === "superadmin";
   const [categoryChoice, setCategoryChoice] = useState("");
   const [customCategory, setCustomCategory] = useState("");
 
@@ -22,10 +23,10 @@ export default function Addproduct() {
   const [msg, setMsg] = useState("");
 
   useEffect(() => {
-    if (role !== "admin") {
+    if (!isAdmin) {
       navigate("/");
     }
-  }, [role, navigate]);
+  }, [isAdmin, navigate]);
 
   const handleChange = (e) => {
     setForm({

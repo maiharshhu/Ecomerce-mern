@@ -1,6 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
+import {
+  signInWithEmailAndPassword,
+  sendPasswordResetEmail,
+} from "firebase/auth";
 import api from "../api/axios";
+import { auth } from "../firebase";
 
 export default function Login() {
   const [form, setForm] = useState({
@@ -9,6 +14,7 @@ export default function Login() {
   });
 
   const [msg, setMsg] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -20,14 +26,18 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setMsg("");
+    setIsSubmitting(true);
 
     try {
-      const res = await api.post("/auth/login", form);
+      const credentials = await signInWithEmailAndPassword(
+        auth,
+        form.email,
+        form.password,
+      );
+      const idToken = await credentials.user.getIdToken();
+      const res = await api.post("/auth/firebase", { idToken });
 
-      // check response is working or not
-      console.log("data", res);
-
-      // save token to local storage
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("userId", res.data.user.id);
       localStorage.setItem("role", res.data.user.role || "user");
@@ -38,7 +48,23 @@ export default function Login() {
         navigate("/");
       }, 1000);
     } catch (err) {
-      setMsg(err.response?.data?.message || "An error occurred");
+      setMsg(err.response?.data?.message || err.message || "An error occurred");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleReset = async () => {
+    if (!form.email) {
+      setMsg("Enter your email to reset your password.");
+      return;
+    }
+
+    try {
+      await sendPasswordResetEmail(auth, form.email);
+      setMsg("Password reset link sent. Check your inbox.");
+    } catch (err) {
+      setMsg(err.message || "Unable to send reset email.");
     }
   };
 
@@ -77,11 +103,20 @@ export default function Login() {
 
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 cursor-pointer"
+            disabled={isSubmitting}
+            className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 disabled:opacity-60"
           >
-            Login
+            {isSubmitting ? "Logging in..." : "Login"}
           </button>
         </form>
+
+        <button
+          type="button"
+          onClick={handleReset}
+          className="mt-3 w-full text-sm font-semibold text-blue-600 hover:text-blue-700"
+        >
+          Forgot password?
+        </button>
       </div>
     </div>
   );

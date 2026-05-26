@@ -1,5 +1,8 @@
 import { useState } from "react";
+import { useNavigate } from "react-router";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import api from "../api/axios";
+import { auth } from "../firebase";
 
 export default function Signup() {
   const [form, setForm] = useState({
@@ -9,6 +12,8 @@ export default function Signup() {
   });
 
   const [msg, setMsg] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setForm({
@@ -19,12 +24,33 @@ export default function Signup() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setMsg("");
+    setIsSubmitting(true);
 
     try {
-      const response = await api.post("/auth/signup", form);
-      setMsg(response.data.message);
+      const credentials = await createUserWithEmailAndPassword(
+        auth,
+        form.email,
+        form.password,
+      );
+
+      if (form.name) {
+        await updateProfile(credentials.user, { displayName: form.name });
+      }
+
+      const idToken = await credentials.user.getIdToken();
+      const response = await api.post("/auth/firebase", { idToken });
+
+      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("userId", response.data.user.id);
+      localStorage.setItem("role", response.data.user.role || "user");
+
+      setMsg("Signup successful. Redirecting...");
+      setTimeout(() => navigate("/"), 1000);
     } catch (err) {
-      setMsg(err.response?.data?.message || "An Error occured");
+      setMsg(err.response?.data?.message || err.message || "An Error occured");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -71,9 +97,10 @@ export default function Signup() {
 
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 cursor-pointer"
+            disabled={isSubmitting}
+            className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 disabled:opacity-60"
           >
-            Sign Up
+            {isSubmitting ? "Creating..." : "Sign Up"}
           </button>
         </form>
       </div>

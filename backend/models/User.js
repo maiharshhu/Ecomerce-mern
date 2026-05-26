@@ -12,11 +12,21 @@ const userSchema = mongoose.Schema({
     },
     password: {
         type: String,
-        required: true
+        required: false
+    },
+    firebaseUid: {
+        type: String,
+        unique: true,
+        sparse: true
+    },
+    authProvider: {
+        type: String,
+        enum: ["local", "firebase"],
+        default: "local"
     },
     role: {
         type: String,
-        enum: ["user", "admin"],
+        enum: ["user", "admin", "superadmin"],
         default: "user"
     },
 },

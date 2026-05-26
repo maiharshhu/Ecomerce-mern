@@ -60,9 +60,14 @@ export default function Navbar() {
           </>
         ) : (
           <>
-            {role === "admin" ? (
+            {role === "admin" || role === "superadmin" ? (
               <Link to="/admin/products" className="text-lg">
                 Admin
+              </Link>
+            ) : null}
+            {role === "superadmin" ? (
+              <Link to="/admin/users" className="text-lg">
+                Users
               </Link>
             ) : null}
             <button onClick={logout} className="text-lg">

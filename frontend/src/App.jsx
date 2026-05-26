@@ -6,6 +6,7 @@ import ProductDetails from "./pages/ProductDetails";
 import AddProduct from "./admin/AddProduct";
 import EditProduct from "./admin/EditProduct";
 import ProductList from "./admin/ProductList";
+import UserManagement from "./admin/UserManagement";
 import Navbar from "./component/Navbar";
 import Cart from "./pages/Cart";
 import CheckoutAddress from "./pages/CheckoutAddress";
@@ -35,6 +36,7 @@ const router = createBrowserRouter([
       { path: "/admin/products", element: <ProductList /> },
       { path: "/admin/products/add", element: <AddProduct /> },
       { path: "/admin/products/edit/:id", element: <EditProduct /> },
+      { path: "/admin/users", element: <UserManagement /> },
       { path: "/checkout-address", element: <CheckoutAddress /> },
       { path: "/checkout", element: <Checkout /> },
       { path: "/order-success/:id", element: <OrderSuccess /> },

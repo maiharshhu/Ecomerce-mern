@@ -8,13 +8,14 @@ export default function ProductList() {
   const [category, setCategory] = useState("");
   const [loading, setLoading] = useState(false);
   const role = localStorage.getItem("role");
+  const isAdmin = role === "admin" || role === "superadmin";
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (role !== "admin") {
+    if (!isAdmin) {
       navigate("/");
     }
-  }, [role, navigate]);
+  }, [isAdmin, navigate]);
 
   const deletedProduct = async (id) => {
     try {
