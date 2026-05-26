@@ -1,10 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import api from "../api/axios.js";
 import { useNavigate } from "react-router";
 
 export default function CheckoutAddress() {
   const userId = localStorage.getItem("userId");
   const navigate = useNavigate();
+  const [addresses, setAddresses] = useState([]);
+  const [selectedAddressId, setSelectedAddressId] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   const [form, setForm] = useState({
     fullName: "",
@@ -16,6 +19,46 @@ export default function CheckoutAddress() {
   });
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (!userId) {
+      navigate("/login");
+      return;
+    }
+
+    let active = true;
+    const loadAddresses = async () => {
+      setIsLoading(true);
+      try {
+        const res = await api.get(`/address/${userId}`);
+        const list = Array.isArray(res.data)
+          ? res.data
+          : Array.isArray(res.data?.addresses)
+            ? res.data.addresses
+            : [];
+        if (active) {
+          setAddresses(list);
+          if (list.length > 0) {
+            setSelectedAddressId(list[0]._id);
+          }
+        }
+      } catch {
+        if (active) {
+          setAddresses([]);
+        }
+      } finally {
+        if (active) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    loadAddresses();
+
+    return () => {
+      active = false;
+    };
+  }, [userId, navigate]);
 
   const fieldLabels = {
     fullName: "Full Name",
@@ -60,6 +103,83 @@ export default function CheckoutAddress() {
         <p className="text-slate-600 mb-6">
           Add your shipping details to continue checkout.
         </p>
+
+        {isLoading ? (
+          <div className="mb-6 rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600">
+            Loading saved addresses...
+          </div>
+        ) : addresses.length > 0 ? (
+          <div className="mb-6 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+            <div className="mb-3 flex items-center justify-between gap-3">
+              <h2 className="text-lg font-semibold text-slate-900">
+                Saved Addresses
+              </h2>
+              <button
+                type="button"
+                disabled={!selectedAddressId}
+                onClick={() =>
+                  navigate("/checkout", {
+                    state: { selectedAddressId },
+                  })
+                }
+                className="rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-blue-700 disabled:bg-blue-300"
+              >
+                Use Selected
+              </button>
+            </div>
+            <div className="space-y-3">
+              {addresses.map((addr) => {
+                const isSelected = selectedAddressId === addr._id;
+                return (
+                  <label
+                    key={addr._id}
+                    htmlFor={`saved-${addr._id}`}
+                    className={`block cursor-pointer rounded-xl border p-4 transition ${
+                      isSelected
+                        ? "border-blue-500 bg-blue-50"
+                        : "border-slate-200 bg-white hover:border-slate-300"
+                    }`}
+                  >
+                    <div className="flex items-start gap-3">
+                      <input
+                        id={`saved-${addr._id}`}
+                        type="radio"
+                        name="savedAddress"
+                        value={addr._id}
+                        checked={isSelected}
+                        onChange={(e) => setSelectedAddressId(e.target.value)}
+                        className="mt-1"
+                      />
+                      <div>
+                        <p className="font-semibold text-slate-900">
+                          {addr.fullName}
+                        </p>
+                        <p className="text-slate-700 text-sm">{addr.phone}</p>
+                        <p className="text-slate-600 text-sm">
+                          {addr.addressLine}, {addr.city}, {addr.state} -{" "}
+                          {addr.pincode}
+                        </p>
+                      </div>
+                    </div>
+                  </label>
+                );
+              })}
+            </div>
+          </div>
+        ) : (
+          <div className="mb-6 rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-4 text-sm text-slate-600">
+            No saved address found. Add a new one below.
+          </div>
+        )}
+
+        <div className="mb-4">
+          <h2 className="text-lg font-semibold text-slate-900">
+            Add New Address
+          </h2>
+          <p className="text-sm text-slate-600">
+            Fill in the form if you want to add another delivery address.
+          </p>
+        </div>
 
         <form onSubmit={saveAddress} className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import api from "../api/axios.js";
-import { Link, useNavigate } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 
 export default function Checkout() {
   const userId = localStorage.getItem("userId");
@@ -8,6 +8,7 @@ export default function Checkout() {
   const [cart, setCart] = useState(null);
   const [selectedAddressId, setSelectedAddressId] = useState("");
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     if (!userId) {
@@ -24,11 +25,17 @@ export default function Checkout() {
           ? res.data.addresses
           : [];
       setAddress(addresses);
-      if (addresses.length > 0) {
+      const preferredAddressId = location.state?.selectedAddressId;
+      if (
+        preferredAddressId &&
+        addresses.some((addr) => addr._id === preferredAddressId)
+      ) {
+        setSelectedAddressId(preferredAddressId);
+      } else if (addresses.length > 0) {
         setSelectedAddressId(addresses[0]._id);
       }
     });
-  }, [userId, navigate]);
+  }, [userId, navigate, location.state?.selectedAddressId]);
 
   const total = (cart?.items || []).reduce(
     (sum, i) => sum + i.quantity * i.productId.price,
